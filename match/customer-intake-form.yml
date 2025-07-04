@@ -1,43 +1,52 @@
-# customer-intake.yml
-# ───────────────────────────────────────────────────────────────
-# Customer-intake snippets for Espanso
-#   • :intake       → interactive Form
-#   • :intake-skel  → plain skeleton with placeholders
-# ───────────────────────────────────────────────────────────────
-
+# Customer-Intake — save in %APPDATA%\espanso\match\customer-intake.yml
 matches:
-  # ─── 1. Interactive Form ────────────────────────────────────
-  - trigger: "customerintake_form"
-    form: |
-      ---
-      ### [[company]] | [[project]]
-      **[[name]] - [[title]] | [[phone]]**
-      [[email]]
-
-      [[notes]]
-
-      ---
-    form_fields:
-      # Drop-down list of common project types
-      project:
-        type: choice
-        values: |
-          Channel Letters
-          Vehicle Wrap
-          Website Redesign
-          Other
-      # Big text box for free-form notes
-      notes:
-        multiline: true
-
-  # ─── 2. Skeleton with placeholders ───────────────────────────
-  - trigger: ":intake-skel"
+  - trigger: "intake"
     replace: |
       ---
-      ### $|$<companyName> | <projectDescription>
-      **<contactName> - <title> | <phoneNumber>**
-      <email>
+      ### {{company_tc}} | {{project_tc}}
+      **{{contact_tc}} - {{title_tc}} | {{phone_fmt}}**
+      {{form1.email}}
 
-      <notes>
+      {{form1.notes}}
 
       ---
+    vars:
+      # 1) collect everything with a Form
+      - name: form1
+        type: form
+        params:
+          layout: |
+            Company Name [[company]]
+            Project Description [[project]]
+            Contact Name [[contact]]
+            Contact Title [[title]]
+            Phone (digits only) [[phone]]
+            Email [[email]]
+            Notes [[notes]]
+          fields:
+            notes:
+              multiline: true
+
+      # 2) Title-case helpers (PowerShell’s TextInfo)
+      - name: company_tc
+        type: shell
+        params:
+          cmd: powershell -NoProfile -Command "(Get-Culture).TextInfo.ToTitleCase('{{form1.company}}'.ToLower())"
+      - name: project_tc
+        type: shell
+        params:
+          cmd: powershell -NoProfile -Command "(Get-Culture).TextInfo.ToTitleCase('{{form1.project}}'.ToLower())"
+      - name: contact_tc
+        type: shell
+        params:
+          cmd: powershell -NoProfile -Command "(Get-Culture).TextInfo.ToTitleCase('{{form1.contact}}'.ToLower())"
+      - name: title_tc
+        type: shell
+        params:
+          cmd: powershell -NoProfile -Command "(Get-Culture).TextInfo.ToTitleCase('{{form1.title}}'.ToLower())"
+
+      # 3) Phone formatter — converts 10 digits → (123) 456-7890
+      - name: phone_fmt
+        type: shell
+        params:
+          cmd: powershell -NoProfile -Command "'{{form1.phone}}' -replace '(\\d{3})(\\d{3})(\\d{4})', '($1) $2-$3'"
