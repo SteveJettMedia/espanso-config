@@ -2,7 +2,7 @@
 # Trigger :intake-skel  →  inserts a template you over-type
 
 matches:
-  - trigger: "cusinsk"
+  - trigger: "customerintake_skel"
     replace: |
       ---
       ### $|$<companyName> | <projectDescription>

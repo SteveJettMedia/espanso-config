@@ -7,7 +7,7 @@
 
 matches:
   # ─── 1. Interactive Form ────────────────────────────────────
-  - trigger: "cuinfo"
+  - trigger: "customerintake_form"
     form: |
       ---
       ### [[company]] | [[project]]
