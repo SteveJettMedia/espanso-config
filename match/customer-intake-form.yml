@@ -1,0 +1,43 @@
+# customer-intake.yml
+# ───────────────────────────────────────────────────────────────
+# Customer-intake snippets for Espanso
+#   • :intake       → interactive Form
+#   • :intake-skel  → plain skeleton with placeholders
+# ───────────────────────────────────────────────────────────────
+
+matches:
+  # ─── 1. Interactive Form ────────────────────────────────────
+  - trigger: "cuinfo"
+    form: |
+      ---
+      ### [[company]] | [[project]]
+      **[[name]] - [[title]] | [[phone]]**
+      [[email]]
+
+      [[notes]]
+
+      ---
+    form_fields:
+      # Drop-down list of common project types
+      project:
+        type: choice
+        values: |
+          Channel Letters
+          Vehicle Wrap
+          Website Redesign
+          Other
+      # Big text box for free-form notes
+      notes:
+        multiline: true
+
+  # ─── 2. Skeleton with placeholders ───────────────────────────
+  - trigger: ":intake-skel"
+    replace: |
+      ---
+      ### $|$<companyName> | <projectDescription>
+      **<contactName> - <title> | <phoneNumber>**
+      <email>
+
+      <notes>
+
+      ---
