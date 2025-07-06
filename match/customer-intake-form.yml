@@ -1,6 +1,6 @@
 # Customer-Intake — save in %APPDATA%\espanso\match\customer-intake.yml
 matches:
-  - trigger: ":intake"
+  - trigger: ";intake"
     replace: |
       ---
       ### {{company_tc}} | {{project_tc}}
